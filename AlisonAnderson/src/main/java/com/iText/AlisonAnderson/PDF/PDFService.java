@@ -73,14 +73,20 @@ public class PDFService {
             //String delimiters = ";";
             // String delimiters = ",";
 
+            int numOfColumns = table.getNumberOfColumns();
+
             String[] tempArray = line.split(delimiters);
-            for (String s : tempArray) {
-                Cell cell = new Cell().add(new Paragraph(s));
-                if (isHeader) {
-                    table.addHeaderCell(cell);
-                } else {
-                    table.addCell(s);
-                }
+            if (tempArray.length != numOfColumns) {
+                throw new Exception("Number of columns does not match");
+            } else {
+                for (String s : tempArray) {
+                    Cell cell = new Cell().add(new Paragraph(s));
+                    if (isHeader) {
+                        table.addHeaderCell(cell);
+                    } else {
+                        table.addCell(s);
+                    }
+            }
             }
 
             Color[] colors = {RED, ORANGE, YELLOW, GREEN, CYAN, MAGENTA};
