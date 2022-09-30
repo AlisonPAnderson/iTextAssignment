@@ -18,15 +18,18 @@ import java.io.*;
 
 public class PDFService {
     private static final String FILENAME_ONE = "upload-directory/test_csv_convert.csv";
-    private static final String DESTINATION_ONE = "upload-directory/test_csv_convert.pdf";
+    private static final String DESTINATION_ONE = "download-directory/test_csv_convert.pdf";
     private static final String FILENAME_TWO = "upload-directory/united_states.csv";
-    private static final String DESTINATION_TWO = "upload-directory/united_states.pdf";
+    private static final String DESTINATION_TWO = "download-directory/united_states.pdf";
+    private static final String FILENAME_THREE = "upload-directory/test_csv_incomplete.csv";
+    private static final String DESTINATION_THREE = "download-directory/test_csv_incomplete.pdf";
 
     public void createPDF(String path) throws IOException {
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FILENAME_ONE));
             //BufferedReader reader = new BufferedReader(new FileReader(FILENAME_TWO));
+           // BufferedReader reader = new BufferedReader(new FileReader(FILENAME_THREE));
 
             String line = reader.readLine();
 
@@ -52,6 +55,8 @@ public class PDFService {
 
             PdfDocument pdf = new PdfDocument(new PdfWriter(DESTINATION_ONE));
             //PdfDocument pdf = new PdfDocument(new PdfWriter(DESTINATION_TWO));
+           // PdfDocument pdf = new PdfDocument(new PdfWriter(DESTINATION_THREE));
+
             Document document = new Document(pdf, new PageSize(PageSize.A4).rotate());
 
             //event handler for header and footer
@@ -76,18 +81,19 @@ public class PDFService {
             int numOfColumns = table.getNumberOfColumns();
 
             String[] tempArray = line.split(delimiters);
-            if (tempArray.length != numOfColumns) {
-                throw new Exception("Number of columns does not match");
-            } else {
-                for (String s : tempArray) {
-                    Cell cell = new Cell().add(new Paragraph(s));
-                    if (isHeader) {
-                        table.addHeaderCell(cell);
-                    } else {
-                        table.addCell(s);
+                if (tempArray.length == numOfColumns) {
+                    for (String s : tempArray) {
+                        Cell cell = new Cell().add(new Paragraph(s));
+                        if (isHeader) {
+                            table.addHeaderCell(cell);
+                        } else {
+                            table.addCell(s);
+                        }
                     }
-            }
-            }
+                }else if (tempArray.length != numOfColumns) {
+                        throw new Exception("Number of columns does not match");
+                    }
+
 
             Color[] colors = {RED, ORANGE, YELLOW, GREEN, CYAN, MAGENTA};
             int colorIndex = 0;
