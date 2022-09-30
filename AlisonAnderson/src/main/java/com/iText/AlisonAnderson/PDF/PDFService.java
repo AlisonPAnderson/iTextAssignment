@@ -17,11 +17,16 @@ import static com.itextpdf.kernel.colors.ColorConstants.*;
 import java.io.*;
 
 public class PDFService {
+    private static final String FILENAME_ONE = "upload-directory/test_csv_convert.csv";
+    private static final String DESTINATION_ONE = "upload-directory/test_csv_convert.pdf";
+    private static final String FILENAME_TWO = "upload-directory/united_states.csv";
+    private static final String DESTINATION_TWO = "upload-directory/united_states.pdf";
 
     public void createPDF(String path) throws IOException {
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("upload-directory/united_states.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader(FILENAME_ONE));
+            //BufferedReader reader = new BufferedReader(new FileReader(FILENAME_TWO));
 
             String line = reader.readLine();
 
@@ -45,7 +50,8 @@ public class PDFService {
 
             reader.close();
 
-            PdfDocument pdf = new PdfDocument(new PdfWriter("download-directory/united_states.pdf"));
+            PdfDocument pdf = new PdfDocument(new PdfWriter(DESTINATION_ONE));
+            //PdfDocument pdf = new PdfDocument(new PdfWriter(DESTINATION_TWO));
             Document document = new Document(pdf, new PageSize(PageSize.A4).rotate());
 
             //event handler for header and footer
@@ -61,8 +67,10 @@ public class PDFService {
 
     public void splitLine(Table table, String line, boolean isHeader) {
         try {
-            // String delimiters = "[-\\t,;.?!:@\\[\\](){}_*/]";
-            String delimiters = ";";
+            // delimiter requires to be changed per CSV file
+
+             String delimiters = "[-\\t,;.?!:@\\[\\](){}_*/]";
+            //String delimiters = ";";
             // String delimiters = ",";
 
             String[] tempArray = line.split(delimiters);
@@ -70,7 +78,6 @@ public class PDFService {
                 Cell cell = new Cell().add(new Paragraph(s));
                 if (isHeader) {
                     table.addHeaderCell(cell);
-
                 } else {
                     table.addCell(s);
                 }
@@ -108,8 +115,8 @@ public class PDFService {
     // table constructor requires int number of columns
     public int numOfColumns(String line) {
         try {
-            //String delimiters = "[-\\t,;.?!:@\\[\\](){}_*/]";
-            String delimiters = ";";
+            String delimiters = "[-\\t,;.?!:@\\[\\](){}_*/]";
+            //String delimiters = ";";
             String[] tempArray = line.split(delimiters);
             return tempArray.length;
         } catch (Exception e) {
